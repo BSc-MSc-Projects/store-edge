@@ -103,3 +103,6 @@ Furthermore, insde the script:
 - the Dockerfile copies the local files _credentials_ and _config_ into the container, so that each edge node can connect to the DynamoDB service;
 - the edge nodes cluster is launched by using the command __docker-compose up__, using the configuration defined in the _docker-compose.yml_ file, under the  _edge\_deploy/_ directory;
 
+
+## Development
+Developed with @shockgiammy
