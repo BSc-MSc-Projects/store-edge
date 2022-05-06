@@ -105,4 +105,4 @@ Furthermore, insde the script:
 
 
 ## Development
-Developed with @shockgiammy
+Developed with [Gian Marco Falcone](https://github.com/ShockGiammy)
