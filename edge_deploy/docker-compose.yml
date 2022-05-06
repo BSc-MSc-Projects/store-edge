@@ -1,0 +1,8 @@
+# this simple docker-compose file is used to start up the register node and the edge nodes
+services:
+  edge:
+    image: "edge:latest"
+    deploy:
+      mode: replicated
+      replicas: 15     # number of replicas
+    

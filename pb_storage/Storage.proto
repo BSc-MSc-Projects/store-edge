@@ -1,0 +1,51 @@
+// this file contains the definition of the Storage interface, using Protocol Buffer syntax. This interface will be implemented
+// by the server node
+//
+// Compile with: protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative pb_storage/Storage.proto
+
+syntax = "proto3";
+package storage;
+
+option go_package = "/pb_storage";      // defines the place where the generated code will be placed
+
+/* This interface will be exported by the server. Each rpc operation operates with streams of input objects 
+ * because it is possible, with the same rpc operation to transfer a single array of bytes of information
+ * or a more complex data, such as images or text files (maybe videos??). The update operation does not take a stream
+ * of StorageRecord, because its useless to pass a big value to the other server. It will only take updates for small
+ * values, eventually will query the S3 bucket to check if a key that does not exist is saved in the Cloud
+*/
+service Storage{
+
+    // Put operation. OpStatus is a message containing the result of the operation
+    rpc Put(StorageRecordMessage) returns (OpStatus) {}
+
+    // Get operation. This is a server-side stream RPC, because the server may send multiple values
+    rpc Get(stream StorageRecordMessage) returns (stream StorageRecordMessage) {}
+
+    // Del operation. OpStatus is a message containing the result of the operation
+    rpc Del(StorageRecordMessage) returns (OpStatus) {}
+
+    // Append operation
+    rpc Append(StorageRecordMessage) returns (OpStatus){}
+
+    //Update operation, just used server-by-server side
+    rpc Update(StorageRecordMessage) returns (stream StorageRecordMessage){} 
+}
+
+
+// A storage record is an element in which a value is associated to a specific key
+message StorageRecordMessage {
+    string key=1;           // the key for the record
+    bytes value=2;          // maps to []byte of Go, the value associated to the key 
+    int32 opcode=3;         // the operation code number, to determine if it is a Put, a Get, a Del or an Append operation
+    int64 length=4;         // the lenght of the value that is being trasfered
+    bool forward=5;         // tells the server if it has to forward the message to the other edge nodes
+    int32 nvalues=6;        // number of values associated to a key that will be sent for a Get RPC
+    string ipSender_owner=7;      // ip address of the server that send the update to the master of the key
+    int32 portSender_owner=8;     // port of the server that send the update to the master of the key
+}
+
+message OpStatus {
+    int32 status=1;     // the status of an operation. If 0, the operation was successfully completed, else it is negative
+    string message=2;   // a message, containing information about the error encountered 
+}

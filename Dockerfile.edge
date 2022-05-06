@@ -1,0 +1,16 @@
+#syntax=docker/dockerfile:1
+
+FROM golang:1.16-alpine AS edge_build
+WORKDIR /sdcc_edge_nodes
+COPY . .
+RUN go mod download
+RUN go build -o /edge_node server_node/server.go
+
+FROM alpine:latest
+WORKDIR /sdcc_edge_nodes
+COPY --from=edge_build /edge_node .
+RUN mkdir -p /root/.aws
+COPY .aws /root/.aws
+CMD [ "/sdcc_edge_nodes/edge_node", "3.89.129.11"]
+
+

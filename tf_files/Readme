@@ -1,0 +1,25 @@
+------------------------------- How to build an infrastructure on AWS -------------------------------------------
+				
+				Config file
+The configuration file "dynamo.tf" contains the logic to create a dynamo DB table on AWS
+
+
+				Pre-requisites:
+These are the pre-requisites needed to run the configuration file with terraform:
+
+- aws CLI
+- terraform CLI (v 0.14.9+)
+- AWS account + credentials and config files on the local machine (under $HOME/.aws directory)
+
+
+				Commands to manage the infrastructure
+
+1) Initialize the directory:			terraform init
+2) Format and validate the configuration:	terraform fmt, terraform validate
+3) Create infrastructure:			terraform apply
+
+
+Delete the infrastructure:			terraform destroy
+
+-----------------------------------------------------------------------------------------------------------------
+To connect to the AWS EC2 instance: ssh -o IdentitiesOnly=yes -i <your_private_key> ec2-user@ec2-<ec2_pub_ip_addr>

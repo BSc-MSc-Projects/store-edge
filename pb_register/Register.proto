@@ -1,0 +1,41 @@
+// this file contains the definition of the Register interface, using Protocol Buffer syntax. This interface will be implemented
+// by the register node
+//
+// Compile with: protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative pb_register/Register.proto
+
+syntax = "proto3";
+package register;
+
+option go_package = "/pb_register";      // defines the place where the generated code will be placed
+
+// this interface will be exported by the client / server
+service Register{
+
+    // Client asks to RegisterServer where is a StorageServer close to him
+    rpc GetCloseStorageServers(ClientMsg) returns (ListOfStorageServerMsg) {}
+
+    // StorageServer asks RegisterServer for others StorageServers
+    rpc GetListOfPeers(StorageServerMsg) returns (ListOfStorageServerMsg) {}
+
+    // StorageServer comunicate that is still alive
+    rpc Heartbeat(StorageServerMsg) returns (ListOfStorageServerMsg) {}
+}
+
+
+// A storageServerMsg contains the ip address and the port of the server
+message StorageServerMsg {
+    string ip_addr = 1;
+    int32 port = 2;
+}
+
+// A ListOfStorageServerMsg contains the list of ip addresses and ports of the active servers
+message ListOfStorageServerMsg {
+    repeated string ip_addr = 1;
+    repeated int32 port = 2;
+}
+
+// A ClientMsg contains the ip address and the port of the client
+message ClientMsg {
+    string ip_addr = 1;
+    int32 port = 2;
+}
